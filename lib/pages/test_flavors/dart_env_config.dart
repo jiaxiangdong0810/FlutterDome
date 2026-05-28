@@ -10,7 +10,6 @@ class DartEnvConfigDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const env = String.fromEnvironment('ENV', defaultValue: 'dev');
     final config = AppConfig.current;
 
     return Card(
@@ -31,7 +30,7 @@ class DartEnvConfigDemo extends StatelessWidget {
               ],
             ),
             const Divider(),
-            _buildInfoRow('环境标识 (ENV)', env.isEmpty ? 'dev (默认)' : env),
+            _buildInfoRow('环境标识 (ENV)', config.envName),
             _buildInfoRow('API Base URL', config.apiBaseUrl),
             _buildInfoRow('日志级别', config.logLevel.name),
             _buildInfoRow('调试菜单', config.enableDebugMenu ? '开启' : '关闭'),
