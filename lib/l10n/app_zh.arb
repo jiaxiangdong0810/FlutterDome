@@ -1,0 +1,48 @@
+{
+  "pageTitle": "国际化演示",
+  "@pageTitle": {
+    "description": "页面标题"
+  },
+  "currentLocale": "当前语言：{locale}",
+  "@currentLocale": {
+    "description": "显示当前语言",
+    "placeholders": {
+      "locale": {
+        "type": "String",
+        "example": "zh"
+      }
+    }
+  },
+  "greeting": "你好，{name}！",
+  "@greeting": {
+    "description": "带名字的问候语",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "张三"
+      }
+    }
+  },
+  "itemCount": "你有 {count} 条消息",
+  "@itemCount": {
+    "description": "消息数量",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "switchToEn": "切换到英文",
+  "@switchToEn": {
+    "description": "切换到英文按钮"
+  },
+  "switchToZh": "切换到中文",
+  "@switchToZh": {
+    "description": "切换到中文按钮"
+  },
+  "demoDescription": "本页面演示 flutter gen-l10n 的使用。翻译内容定义在 .arb 文件中，运行 flutter gen-l10n 后生成 Dart 代码。",
+  "@demoDescription": {
+    "description": "演示说明"
+  }
+}

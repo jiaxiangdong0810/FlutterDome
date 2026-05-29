@@ -1,4 +1,4 @@
-// 环境配置模型，支持 Dart --dart-define 和 Android Flavor 两种方式
+// 环境配置模型，通过 Android Flavor 自动注入环境参数
 enum LogLevel { verbose, debug, info, warning, error }
 
 class AppConfig {
@@ -21,13 +21,6 @@ class AppConfig {
     logLevel: LogLevel.verbose,
   );
 
-  static const AppConfig staging = AppConfig(
-    envName: 'staging',
-    apiBaseUrl: 'https://api.staging.example.com',
-    enableDebugMenu: true,
-    logLevel: LogLevel.debug,
-  );
-
   static const AppConfig prod = AppConfig(
     envName: 'prod',
     apiBaseUrl: 'https://api.example.com',
@@ -35,16 +28,12 @@ class AppConfig {
     logLevel: LogLevel.error,
   );
 
-  /// 自动检测当前环境：优先使用 Android Flavor 的 FLUTTER_FLAVOR，
-  /// 回退到 --dart-define 传入的 ENV，默认 dev
+  /// 通过 FLUTTER_APP_FLAVOR 自动识别当前环境（Flutter 3.16+ 自动注入）
   static AppConfig get current {
-    const flavor = String.fromEnvironment('FLUTTER_FLAVOR');
-    const dartEnv = String.fromEnvironment('ENV', defaultValue: 'dev');
-    final env = flavor.isNotEmpty ? flavor : dartEnv;
-    return switch (env) {
-      'dev' => dev,
-      'staging' => staging,
+    const flavor = String.fromEnvironment('FLUTTER_APP_FLAVOR');
+    return switch (flavor) {
       'prod' => prod,
+      'dev' => dev,
       _ => dev,
     };
   }
