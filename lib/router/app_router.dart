@@ -45,5 +45,17 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: RiverpodScopedRoute.page, path: '/riverpod-scoped-provider'),
     AutoRoute(page: RefreshDemoRoute.page, path: '/riverpod-refresh'),
     AutoRoute(page: TodoRoute.page, path: '/riverpod-todo'),
+
+    // HTTP 学习路径
+    AutoRoute(page: TestHttpsRoute.page, path: '/test-https'),
+    AutoRoute(page: HttpBasicRoute.page, path: '/test-https/basic'),
+    AutoRoute(page: HttpPackageDemoRoute.page, path: '/test-https/http-package'),
+    AutoRoute(page: DioBasicDemoRoute.page, path: '/test-https/dio-basic'),
+    AutoRoute(page: DioInterceptorDemoRoute.page, path: '/test-https/dio-interceptor'),
+    AutoRoute(page: DioAdvancedConfigRoute.page, path: '/test-https/dio-advanced'),
+    AutoRoute(page: FileUploadDownloadDemoRoute.page, path: '/test-https/file-upload-download'),
+    AutoRoute(page: DioClientDemoRoute.page, path: '/test-https/dio-client'),
+    AutoRoute(page: CacheStrategyDemoRoute.page, path: '/test-https/cache-strategy'),
+    AutoRoute(page: NetworkStateDemoRoute.page, path: '/test-https/network-state'),
   ];
 }

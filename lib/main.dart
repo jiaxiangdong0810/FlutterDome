@@ -257,6 +257,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
+            const SizedBox(height: 24),
+            const Text(
+              'HTTP 学习路径',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () => context.router.push(const TestHttpsRoute()),
+              child: const Text('HTTP 基础入门'),
+            ),
             const SizedBox(height: 32),
           ],
         ),
