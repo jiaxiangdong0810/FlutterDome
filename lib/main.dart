@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'blocs/user_bloc.dart';
 import 'design_tokens/theme_provider.dart';
@@ -32,29 +33,31 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final appRouter = AppRouter();
-    return ThemeProvider(
-      isDark: _isDark,
-      toggleTheme: _toggleTheme,
-      child: BlocProvider(
-        create: (_) => UserBloc(),
-        child: Builder(
-          builder: (context) {
-            return MaterialApp.router(
-              title: 'Flutter Demo',
-              theme: ThemeProvider.of(context).theme,
-              routerConfig: appRouter.config(),
-              localizationsDelegates: const [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: const [
-                Locale('zh'),
-                Locale('en'),
-              ],
-            );
-          },
+    return ProviderScope(
+      child: ThemeProvider(
+        isDark: _isDark,
+        toggleTheme: _toggleTheme,
+        child: BlocProvider(
+          create: (_) => UserBloc(),
+          child: Builder(
+            builder: (context) {
+              return MaterialApp.router(
+                title: 'Flutter Demo',
+                theme: ThemeProvider.of(context).theme,
+                routerConfig: appRouter.config(),
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: const [
+                  Locale('zh'),
+                  Locale('en'),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -192,6 +195,69 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () => context.router.push(const ProviderCartRoute()),
               child: const Text('Provider 购物车实战'),
             ),
+            const SizedBox(height: 24),
+            const Text(
+              'Riverpod 学习路径',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.center,
+              children: [
+                _RiverpodButton(
+                  title: '01 Hello',
+                  route: const RiverpodHelloRoute(),
+                ),
+                _RiverpodButton(
+                  title: '02 Providers',
+                  route: const RiverpodProvidersRoute(),
+                ),
+                _RiverpodButton(
+                  title: '03 Notifier',
+                  route: const RiverpodStateNotifierRoute(),
+                ),
+                _RiverpodButton(
+                  title: '04 Consumer',
+                  route: const RiverpodConsumerRoute(),
+                ),
+                _RiverpodButton(
+                  title: '05 Family',
+                  route: const FamilyDemoRoute(),
+                ),
+                _RiverpodButton(
+                  title: '06 AutoDispose',
+                  route: const RiverpodAutoDisposeRoute(),
+                ),
+                _RiverpodButton(
+                  title: '07 Dependency',
+                  route: const RiverpodDependencyRoute(),
+                ),
+                _RiverpodButton(
+                  title: '08 Select',
+                  route: const RiverpodOptimizationRoute(),
+                ),
+                _RiverpodButton(
+                  title: '09 AsyncValue',
+                  route: const AsyncValueRoute(),
+                ),
+                _RiverpodButton(
+                  title: '10 Scoped',
+                  route: const RiverpodScopedRoute(),
+                ),
+                _RiverpodButton(
+                  title: '11 Refresh',
+                  route: const RefreshDemoRoute(),
+                ),
+                _RiverpodButton(
+                  title: '12 Todo 实战',
+                  route: const TodoRoute(),
+                  isPrimary: true,
+                ),
+              ],
+            ),
+            const SizedBox(height: 32),
           ],
         ),
       ),
@@ -200,6 +266,32 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
+    );
+  }
+}
+
+class _RiverpodButton extends StatelessWidget {
+  final String title;
+  final PageRouteInfo route;
+  final bool isPrimary;
+
+  const _RiverpodButton({
+    required this.title,
+    required this.route,
+    this.isPrimary = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () => context.router.push(route),
+      style: isPrimary
+          ? ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            )
+          : null,
+      child: Text(title),
     );
   }
 }

@@ -31,5 +31,19 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: ProviderAsyncRoute.page, path: '/provider-async'),
     AutoRoute(page: ProviderOptimizationRoute.page, path: '/provider-optimization'),
     AutoRoute(page: ProviderCartRoute.page, path: '/provider-cart'),
+
+    // Riverpod 学习路径
+    AutoRoute(page: RiverpodHelloRoute.page, path: '/riverpod-hello'),
+    AutoRoute(page: RiverpodProvidersRoute.page, path: '/riverpod-providers'),
+    AutoRoute(page: RiverpodStateNotifierRoute.page, path: '/riverpod-state-notifier'),
+    AutoRoute(page: RiverpodConsumerRoute.page, path: '/riverpod-consumer'),
+    AutoRoute(page: FamilyDemoRoute.page, path: '/riverpod-family'),
+    AutoRoute(page: RiverpodAutoDisposeRoute.page, path: '/riverpod-autodispose'),
+    AutoRoute(page: RiverpodDependencyRoute.page, path: '/riverpod-dependency'),
+    AutoRoute(page: RiverpodOptimizationRoute.page, path: '/riverpod-optimization'),
+    AutoRoute(page: AsyncValueRoute.page, path: '/riverpod-async-value'),
+    AutoRoute(page: RiverpodScopedRoute.page, path: '/riverpod-scoped-provider'),
+    AutoRoute(page: RefreshDemoRoute.page, path: '/riverpod-refresh'),
+    AutoRoute(page: TodoRoute.page, path: '/riverpod-todo'),
   ];
 }
