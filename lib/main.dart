@@ -1,307 +1,345 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'blocs/user_bloc.dart';
-import 'design_tokens/theme_provider.dart';
-import 'generated/app_localizations.dart';
-import 'router/app_router.dart';
-import 'router/app_router.gr.dart';
+import 'package:untitled1/router/app_router.dart';
+import 'package:untitled1/router/app_router.gr.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  final appRouter = AppRouter();
+  runApp(
+    ProviderScope(
+      child: MyApp(appRouter: appRouter),
+    ),
+  );
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class MyApp extends StatelessWidget {
+  final AppRouter appRouter;
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  bool _isDark = false;
-
-  void _toggleTheme() {
-    setState(() {
-      _isDark = !_isDark;
-    });
-  }
+  const MyApp({super.key, required this.appRouter});
 
   @override
   Widget build(BuildContext context) {
-    final appRouter = AppRouter();
-    return ProviderScope(
-      child: ThemeProvider(
-        isDark: _isDark,
-        toggleTheme: _toggleTheme,
-        child: BlocProvider(
-          create: (_) => UserBloc(),
-          child: Builder(
-            builder: (context) {
-              return MaterialApp.router(
-                title: 'Flutter Demo',
-                theme: ThemeProvider.of(context).theme,
-                routerConfig: appRouter.config(),
-                localizationsDelegates: const [
-                  AppLocalizations.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                supportedLocales: const [
-                  Locale('zh'),
-                  Locale('en'),
-                ],
-              );
-            },
-          ),
-        ),
+    return MaterialApp.router(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
       ),
+      routerConfig: appRouter.config(),
     );
   }
 }
 
 @RoutePage()
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final themeProvider = ThemeProvider.of(context);
-
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Flutter Demo Home Page'),
-        actions: [
-          IconButton(
-            icon: Icon(themeProvider.isDark ? Icons.light_mode : Icons.dark_mode),
-            onPressed: themeProvider.toggleTheme,
-          ),
-        ],
+        title: const Text('Flutter 知识点'),
+        centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          // ==================== 异步编程 ====================
+          _ModuleCard(
+            title: '⚡ 异步编程',
+            child: _NavButton(
+              label: '进入学习',
+              onTap: () => context.router.push(const AsyncHubRoute()),
             ),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () => context.router.push(const UserListRoute()),
-              child: const Text('跳转到用户列表'),
+          ),
+          const SizedBox(height: 12),
+
+          // ==================== 事件分发机制 ====================
+          _ModuleCard(
+            title: '📡 事件分发机制',
+            child: _NavButton(
+              label: '进入学习',
+              onTap: () => context.router.push(const EventHubRoute()),
             ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const RebuildDemoRoute()),
-              child: const Text('Widget 重建机制演示'),
+          ),
+          const SizedBox(height: 12),
+
+          // ==================== 网络请求 ====================
+          _ModuleCard(
+            title: '🌐 网络请求',
+            child: _NavButton(
+              label: '进入学习',
+              onTap: () => context.router.push(const TestHttpsRoute()),
             ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const BlocBasicsRoute()),
-              child: const Text('Bloc 入门示例'),
+          ),
+          const SizedBox(height: 12),
+
+          // ==================== Riverpod 状态管理 ====================
+          _ModuleCard(
+            title: '🧪 Riverpod 状态管理',
+            child: _NavButton(
+              label: '进入学习',
+              onTap: () => context.router.push(const RiverpodHubRoute()),
             ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const BlocListRoute()),
-              child: const Text('Bloc 列表实战'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const AutoRouteHomeRoute()),
-              child: const Text('AutoRoute 示例'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const FlavorsDemoRoute()),
-              child: const Text('多环境配置（Flavors）演示'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const WidgetTestDemoRoute()),
-              child: const Text('Widget Test 演示'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const IntegrationTestDemoRoute()),
-              child: const Text('Integration Test 演示'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const ThemeDemoRoute()),
-              child: const Text('ThemeData + Design Token 演示'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const L10nDemoRoute()),
-              child: const Text('gen-l10n 国际化演示'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const InheritedWidgetDemoRoute()),
-              child: const Text('InheritedWidget 演示（方案 B）'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const InheritedWidgetNotifierRoute()),
-              child: const Text('InheritedNotifier 演示（最优方案）'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const MultiListenerRoute()),
-              child: const Text('ChangeNotifier 多订阅者演示'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const ProviderBasicRoute()),
-              child: const Text('Provider 基础用法'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const ProviderMultiRoute()),
-              child: const Text('MultiProvider + ProxyProvider'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const ProviderAsyncRoute()),
-              child: const Text('Provider + 异步操作'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const ProviderOptimizationRoute()),
-              child: const Text('Provider 重建优化'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const ProviderCartRoute()),
-              child: const Text('Provider 购物车实战'),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Riverpod 学习路径',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              alignment: WrapAlignment.center,
+          ),
+          const SizedBox(height: 12),
+
+          // ==================== Provider 状态管理 ====================
+          _ModuleCard(
+            title: '📦 Provider 状态管理',
+            child: Column(
               children: [
-                _RiverpodButton(
-                  title: '01 Hello',
-                  route: const RiverpodHelloRoute(),
+                _NavButton(
+                  label: 'Provider 基础',
+                  onTap: () =>
+                      context.router.push(const ProviderBasicRoute()),
                 ),
-                _RiverpodButton(
-                  title: '02 Providers',
-                  route: const RiverpodProvidersRoute(),
+                const Divider(height: 1),
+                _NavButton(
+                  label: '多 Provider',
+                  onTap: () =>
+                      context.router.push(const ProviderMultiRoute()),
                 ),
-                _RiverpodButton(
-                  title: '03 Notifier',
-                  route: const RiverpodStateNotifierRoute(),
+                const Divider(height: 1),
+                _NavButton(
+                  label: '异步 Provider',
+                  onTap: () =>
+                      context.router.push(const ProviderAsyncRoute()),
                 ),
-                _RiverpodButton(
-                  title: '04 Consumer',
-                  route: const RiverpodConsumerRoute(),
+                const Divider(height: 1),
+                _NavButton(
+                  label: '性能优化',
+                  onTap: () => context.router
+                      .push(const ProviderOptimizationRoute()),
                 ),
-                _RiverpodButton(
-                  title: '05 Family',
-                  route: const FamilyDemoRoute(),
-                ),
-                _RiverpodButton(
-                  title: '06 AutoDispose',
-                  route: const RiverpodAutoDisposeRoute(),
-                ),
-                _RiverpodButton(
-                  title: '07 Dependency',
-                  route: const RiverpodDependencyRoute(),
-                ),
-                _RiverpodButton(
-                  title: '08 Select',
-                  route: const RiverpodOptimizationRoute(),
-                ),
-                _RiverpodButton(
-                  title: '09 AsyncValue',
-                  route: const AsyncValueRoute(),
-                ),
-                _RiverpodButton(
-                  title: '10 Scoped',
-                  route: const RiverpodScopedRoute(),
-                ),
-                _RiverpodButton(
-                  title: '11 Refresh',
-                  route: const RefreshDemoRoute(),
-                ),
-                _RiverpodButton(
-                  title: '12 Todo 实战',
-                  route: const TodoRoute(),
-                  isPrimary: true,
+                const Divider(height: 1),
+                _NavButton(
+                  label: '购物车示例',
+                  onTap: () =>
+                      context.router.push(const ProviderCartRoute()),
                 ),
               ],
             ),
-            const SizedBox(height: 24),
-            const Text(
-              'HTTP 学习路径',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+
+          // ==================== BLoC 架构 ====================
+          _ModuleCard(
+            title: '🏗️ BLoC 架构',
+            child: Column(
+              children: [
+                _NavButton(
+                  label: 'BLoC 基础',
+                  onTap: () =>
+                      context.router.push(const BlocBasicsRoute()),
+                ),
+                const Divider(height: 1),
+                _NavButton(
+                  label: 'BLoC 列表示例',
+                  onTap: () =>
+                      context.router.push(const BlocListRoute()),
+                ),
+              ],
             ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.router.push(const TestHttpsRoute()),
-              child: const Text('HTTP 基础入门'),
+          ),
+          const SizedBox(height: 12),
+
+          // ==================== 状态管理基础 ====================
+          _ModuleCard(
+            title: '🔄 状态管理基础',
+            child: Column(
+              children: [
+                _NavButton(
+                  label: '多监听器 MultiListener',
+                  onTap: () =>
+                      context.router.push(const MultiListenerRoute()),
+                ),
+                const Divider(height: 1),
+                _NavButton(
+                  label: '重建演示 RebuildDemo',
+                  onTap: () =>
+                      context.router.push(const RebuildDemoRoute()),
+                ),
+              ],
             ),
-            const SizedBox(height: 32),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+          ),
+          const SizedBox(height: 12),
+
+          // ==================== InheritedWidget 相关 ====================
+          _ModuleCard(
+            title: '🧬 InheritedWidget 相关',
+            child: Row(
+              children: [
+                Expanded(
+                  child: _NavButton(
+                    label: 'InheritedWidget',
+                    onTap: () => context.router
+                        .push(const InheritedWidgetDemoRoute()),
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  height: 24,
+                  color: Theme.of(context).dividerColor,
+                ),
+                Expanded(
+                  child: _NavButton(
+                    label: '+ ChangeNotifier',
+                    onTap: () => context.router
+                        .push(const InheritedWidgetNotifierRoute()),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // ==================== AutoRoute 路由 ====================
+          _ModuleCard(
+            title: '🛣️ AutoRoute 路由',
+            child: _NavButton(
+              label: '进入学习',
+              onTap: () =>
+                  context.router.push(const AutoRouteHomeRoute()),
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // ==================== 主题与国际化 ====================
+          _ModuleCard(
+            title: '🎨 主题与国际化',
+            child: Row(
+              children: [
+                Expanded(
+                  child: _NavButton(
+                    label: '主题 Theme',
+                    onTap: () =>
+                        context.router.push(const ThemeDemoRoute()),
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  height: 24,
+                  color: Theme.of(context).dividerColor,
+                ),
+                Expanded(
+                  child: _NavButton(
+                    label: '多语言 L10n',
+                    onTap: () =>
+                        context.router.push(const L10nDemoRoute()),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // ==================== 测试相关 ====================
+          _ModuleCard(
+            title: '🧪 测试相关',
+            child: Row(
+              children: [
+                Expanded(
+                  child: _NavButton(
+                    label: 'Widget 测试',
+                    onTap: () => context.router
+                        .push(const WidgetTestDemoRoute()),
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  height: 24,
+                  color: Theme.of(context).dividerColor,
+                ),
+                Expanded(
+                  child: _NavButton(
+                    label: '集成测试',
+                    onTap: () => context.router
+                        .push(const IntegrationTestDemoRoute()),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // ==================== Flavor 多环境 ====================
+          _ModuleCard(
+            title: '🍎 Flavor 多环境',
+            child: _NavButton(
+              label: '进入学习',
+              onTap: () => context.router.push(const FlavorsDemoRoute()),
+            ),
+          ),
+          const SizedBox(height: 24),
+        ],
       ),
     );
   }
 }
 
-class _RiverpodButton extends StatelessWidget {
+/// 模块卡片 - 带标题和分隔效果
+class _ModuleCard extends StatelessWidget {
   final String title;
-  final PageRouteInfo route;
-  final bool isPrimary;
+  final Widget child;
 
-  const _RiverpodButton({
-    required this.title,
-    required this.route,
-    this.isPrimary = false,
-  });
+  const _ModuleCard({required this.title, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () => context.router.push(route),
-      style: isPrimary
-          ? ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
-            )
-          : null,
-      child: Text(title),
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 8),
+            child,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 导航按钮 - 较小尺寸
+class _NavButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _NavButton({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: const TextStyle(fontSize: 14),
+              ),
+            ),
+            Icon(
+              Icons.chevron_right,
+              size: 20,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
